@@ -1,0 +1,56 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: CloudFormation
+
+Resources:
+  HaripriyaLaunchTemplate:
+    Type: 'AWS::EC2::LaunchTemplate'
+    Properties:
+      LaunchTemplateName: template_auto
+      LaunchTemplateData:
+        ImageId: ami-09988af04120b3591
+        InstanceType: t2.micro
+        KeyName: haripriya-nv
+
+  HaripriyaTargetGroup:
+    Type: 'AWS::ElasticLoadBalancingV2::TargetGroup'
+    Properties:
+      Name: template-tgt
+      Port: 80
+      Protocol: TCP
+      VpcId: vpc-0852d7d06b55e3ed7
+  
+  MyNLB:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: template-nlb
+      Scheme: internet-facing
+      Type: network
+      Subnets: 
+        - subnet-03562d73c3b891294
+        - subnet-05c467bc70f1ec063
+
+  Listener:
+    Type: 'AWS::ElasticLoadBalancingV2::Listener'
+    Properties:
+      LoadBalancerArn: !Ref MyNLB
+      Port: 80
+      Protocol: TCP
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref HaripriyaTargetGroup
+
+  HaripriyaAutoScalingGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      AutoScalingGroupName: template-autosg
+      MinSize: 1
+      MaxSize: 10
+      DesiredCapacity: 1
+      VPCZoneIdentifier: 
+        - subnet-03562d73c3b891294
+        - subnet-05c467bc70f1ec063
+      TargetGroupARNs:
+        - !Ref HaripriyaTargetGroup
+      LaunchTemplate:
+        LaunchTemplateId: !Ref HaripriyaLaunchTemplate
+        Version: !GetAtt HaripriyaLaunchTemplate.LatestVersionNumber
