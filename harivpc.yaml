@@ -1,0 +1,98 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Resources:
+  HariVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+  
+  HariPublicSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref HariVPC
+      CidrBlock: 10.0.0.0/20
+      AvailabilityZone: us-east-1a
+
+  HariPublicSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref HariVPC
+      CidrBlock: 10.0.16.0/20
+      AvailabilityZone: us-east-1b
+
+  HariPrivateSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref HariVPC
+      CidrBlock: 10.0.128.0/20
+      AvailabilityZone: us-east-1a
+
+  HariPrivateSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref HariVPC
+      CidrBlock: 10.0.144.0/20
+      AvailabilityZone: us-east-1b
+
+  HariPublicRouteTable:
+    Type: "AWS::EC2::RouteTable"
+    Properties:
+      VpcId: !Ref HariVPC
+
+  HariPrivateRouteTable:
+    Type: "AWS::EC2::RouteTable"
+    Properties:
+      VpcId: !Ref HariVPC
+
+  HariPublicNACL:
+    Type: AWS::EC2::NetworkAcl
+    Properties:
+      VpcId: !Ref HariVPC
+
+  HariPrivateNACL:
+    Type: AWS::EC2::NetworkAcl
+    Properties:
+      VpcId: !Ref HariVPC
+
+  PublicSubnet1Association:
+    Type: AWS::EC2::SubnetNetworkAclAssociation
+    Properties:
+      SubnetId: !Ref HariPublicSubnet1
+      NetworkAclId: !Ref HariPublicNACL
+
+  PublicSubnet2Association:
+    Type: AWS::EC2::SubnetNetworkAclAssociation
+    Properties:
+      SubnetId: !Ref HariPublicSubnet2
+      NetworkAclId: !Ref HariPublicNACL
+
+  PrivateSubnet1Association:
+    Type: AWS::EC2::SubnetNetworkAclAssociation
+    Properties:
+      SubnetId: !Ref HariPrivateSubnet1
+      NetworkAclId: !Ref HariPrivateNACL
+
+  PrivateSubnet2Association:
+    Type: AWS::EC2::SubnetNetworkAclAssociation
+    Properties:
+      SubnetId: !Ref HariPrivateSubnet2
+      NetworkAclId: !Ref HariPrivateNACL
+
+  HariNatGateway:
+    Type: "AWS::EC2::NatGateway"
+    Properties:
+      SubnetId: !Ref HariPublicSubnet1
+      AllocationId: eipalloc-01c74612f09f19f51
+
+  HariInternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties: 
+      Tags: 
+        - Key: Name
+          Value: HariPublicRouteTable
+
+  VPCGatewayAttachment:
+    Type: "AWS::EC2::VPCGatewayAttachment"
+    Properties:
+      VpcId: !Ref HariVPC
+      InternetGatewayId: !Ref HariInternetGateway
