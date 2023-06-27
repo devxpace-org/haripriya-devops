@@ -5,7 +5,7 @@ pipeline {
         stage('Build and Deploy') {
             steps {
                 sh '''
-                    docker build -t haripriya/devxpace:nicejob-${version} .
+                    docker build -t haripriya/devxpace:nicejob-${version} DockerHub/Dockerfile
                     docker push haripriya/devxpace:nicejob-${version}
                    '''          
             }
