@@ -7,7 +7,6 @@ pipeline {
                 sh '''
                     sudo docker build -t hrthummala/devxpace:haripriya-${version} DockerHub
                     sudo docker push hrthummala/devxpace:haripriya-${version}
-                    chmod 666 /var/run/docker.sock
                    '''          
             }
          }
