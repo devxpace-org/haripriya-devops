@@ -1,13 +1,13 @@
 FROM node:20-alpine
 
 COPY package.json
-COPY team.js
+COPY haripriya.js
 
 WORKDIR /app/haripriya-devops/
 
 RUN npm install
 
-ENTRYPOINT ["node", "team.js"]
+ENTRYPOINT ["node", "haripriya.js"]
 
 
 
