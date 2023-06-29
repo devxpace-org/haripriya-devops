@@ -5,8 +5,8 @@ pipeline {
         stage('Build and Deploy') {
             steps {
                 sh '''
-                    sudo docker build -t hrthummala/devxpace:supriya-${version} DockerHub/
-                    sudo docker push hrthummala/devxpace:supriya-${version}
+                    sudo docker build -t hrthummala/devxpace:tejaswini-${version} DockerHub/
+                    sudo docker push hrthummala/devxpace:tejaswini-${version}
                    '''          
             }
          }
