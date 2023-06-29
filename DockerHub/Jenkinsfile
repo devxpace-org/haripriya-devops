@@ -5,8 +5,8 @@ pipeline {
         stage('Build and Deploy') {
             steps {
                 sh '''
-                    sudo docker build -t hrthummala/devxpace:maazin-${version} DockerHub/
-                    sudo docker push hrthummala/devxpace:maazin-${version}
+                    sudo docker build -t hrthummala/devxpace:praneeth-${version} DockerHub/
+                    sudo docker push hrthummala/devxpace:praneeth-${version}
                    '''          
             }
          }
